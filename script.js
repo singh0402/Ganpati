@@ -136,6 +136,13 @@ function initializeEventRemoval() {
         const eventCards = document.querySelectorAll('.event-card');
         console.log(`📅 Found ${eventCards.length} event cards to check`);
         
+        // Ensure all event cards are visible first
+        eventCards.forEach(card => {
+            card.style.opacity = '1';
+            card.style.visibility = 'visible';
+            card.style.display = 'block';
+        });
+        
         eventCards.forEach((card, index) => {
             const dateSection = card.closest('.date-section');
             if (!dateSection) return;
@@ -206,6 +213,10 @@ function initializeEventRemoval() {
                 }, 500);
             } else {
                 console.log(`✅ Event is current or future: ${dateText}`);
+                // Ensure current/future events are visible
+                card.style.opacity = '1';
+                card.style.visibility = 'visible';
+                card.style.display = 'block';
             }
         });
     }
@@ -252,6 +263,31 @@ function initializeEventRemoval() {
         setTimeout(() => {
             window.forceRemoveAugust30();
         }, 2000);
+    }
+    
+    // Ensure events are visible on mobile
+    window.ensureEventsVisible = function() {
+        console.log('📱 Ensuring events are visible on mobile...');
+        const eventCards = document.querySelectorAll('.event-card');
+        eventCards.forEach(card => {
+            card.style.opacity = '1';
+            card.style.visibility = 'visible';
+            card.style.display = 'block';
+        });
+        
+        const dateSections = document.querySelectorAll('.date-section');
+        dateSections.forEach(section => {
+            section.style.opacity = '1';
+            section.style.visibility = 'visible';
+            section.style.display = 'block';
+        });
+    };
+    
+    // Call this function on mobile devices
+    if (window.innerWidth <= 768) {
+        setTimeout(() => {
+            window.ensureEventsVisible();
+        }, 500);
     }
 }
 
@@ -581,56 +617,8 @@ function initializeMobileAccessibility() {
         });
     });
     
-    // Add skip links for mobile
-    addSkipLinks();
-    
     // Improve focus management
     improveFocusManagement();
-}
-
-// Add skip links for accessibility
-function addSkipLinks() {
-    const skipLinks = [
-        { href: '#home', text: 'Skip to main content' },
-        { href: '#events', text: 'Skip to events' },
-        { href: '#contact', text: 'Skip to contact' }
-    ];
-    
-    const skipContainer = document.createElement('div');
-    skipContainer.className = 'skip-links';
-    skipContainer.style.cssText = `
-        position: absolute;
-        top: -40px;
-        left: 6px;
-        z-index: 1001;
-    `;
-    
-    skipLinks.forEach(link => {
-        const skipLink = document.createElement('a');
-        skipLink.href = link.href;
-        skipLink.textContent = link.text;
-        skipLink.style.cssText = `
-            background: #8B4513;
-            color: white;
-            padding: 8px 16px;
-            text-decoration: none;
-            border-radius: 4px;
-            font-size: 0.9rem;
-            transition: top 0.3s ease;
-        `;
-        
-        skipLink.addEventListener('focus', function() {
-            this.style.top = '6px';
-        });
-        
-        skipLink.addEventListener('blur', function() {
-            this.style.top = '-40px';
-        });
-        
-        skipContainer.appendChild(skipLink);
-    });
-    
-    document.body.insertBefore(skipContainer, document.body.firstChild);
 }
 
 // Improve focus management
